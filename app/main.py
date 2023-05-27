@@ -48,7 +48,7 @@ class SpotifyAPI:
         return artist_id
 
     ##This function gets the data from albums maden by the given 
-    def get_albums(self, artist_id, include_groups : list() = ['album', 'single'], limit : int = 30):
+    def get_albums(self, artist_id, prefix, include_groups : list() = ['album', 'single'], limit : int = 30):
 
         include_groups = ','.join(include_groups)
 
@@ -60,10 +60,9 @@ class SpotifyAPI:
         }
 
         response = requests.get(endpoint, headers = self.base_header, params = params)
-        json_data = json.loads(response.content)
-        # data = json_data["items"][0].json()
+        json_data = json.loads(response.content['items'])
 
-        with open('data.json', 'w') as file:
-            json.dump(response.json(), file, indent=4)
+        with open(prefix + str(datetime.today()) + '.json', 'w') as file:
+            json.dump(json_data.json(), file, indent=4)
 
-        # return data
+        return 0
