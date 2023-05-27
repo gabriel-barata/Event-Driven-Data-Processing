@@ -1,6 +1,8 @@
 from datetime import datetime
 import requests
 import json
+import os
+import re
 
 class SpotifyAPI:
 
@@ -60,9 +62,39 @@ class SpotifyAPI:
         }
 
         response = requests.get(endpoint, headers = self.base_header, params = params)
-        json_data = json.loads(response.content['items'])
+        json_data = json.loads(response.content)["items"]
+        albums_ids = [(album["id"], album["name"]) for album in json_data]
 
-        with open(prefix + str(datetime.today()) + '.json', 'w') as file:
-            json.dump(json_data.json(), file, indent=4)
+        with open('data/albums/' + prefix + '-' + str(datetime.today()).replace(' ', '') + '.json', 'w') as file:
+            json.dump(json_data, file, indent = 4)
+
+        return albums_ids
+    
+    ##This function gets all the tacks in a album
+    def get_album_tacks(self, album_id, album_name, limit : int = 30, market : str = "BR"):
+
+        album_name = '-'.join(re.sub(r'[^\w\s]', '', album_name).lower().split(' '))
+
+        if not os.path.exists('data/tracks/' + album_name):
+            os.makedirs('data/tracks/' + album_name)
+
+        endpoint  = f"https://api.spotify.com/v1/albums/{album_id}/tracks"
+        params = {
+
+            'limit' : limit,
+            'market' : market
+
+        }
+
+        response = requests.get(endpoint, headers = self.base_header, params = params)
+        json_data = json.loads(response.content)["items"]
+
+        for track in json_data:
+
+            track_name = track["name"]
+            track_name  = '-'.join(re.sub(r'[^\w\s]', '', track_name).lower().split(' '))
+
+            with open('data/tracks/' + album_name + '/' + track_name + '.json', 'w') as file:
+                json.dump(track, file, indent = 4)
 
         return 0
