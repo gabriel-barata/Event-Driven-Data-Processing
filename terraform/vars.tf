@@ -15,6 +15,6 @@ variable "project-name" {
 variable "bucket-names" {
 
   type    = list(string)
-  default = ["landing", "curated"]
+  default = ["bronze", "silver"]
 
 }
