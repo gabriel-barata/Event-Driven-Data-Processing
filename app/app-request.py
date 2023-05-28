@@ -6,9 +6,13 @@ load_dotenv()
 
 client_id = os.environ.get("CLIENT_ID")
 client_secret = os.environ.get("CLIENT_SECRET")
+aws_access_key = os.environ.get("AWS_ACCESS_KEY")
+aws_access_key_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 
 app = SpotifyAPI(client_id = client_id,
-                 client_secret = client_secret)
+                 client_secret = client_secret,
+                 aws_access_key = aws_access_key,
+                 aws_access_key_id = aws_access_key_ID)
 app.auth()
 
 artists_list = ['kendrick lamar', 'kanye west', 'tyler the creator', 'kali uchis', 'frank ocean']
