@@ -1,4 +1,5 @@
 terraform {
+
   required_providers {
 
     aws = {
@@ -7,6 +8,18 @@ terraform {
       version = "~> 4.0"
 
     }
+  }
+}
+
+#Connfiguring the terraform backend
+terraform {
+
+  backend "s3" {
+
+    bucket = "terraform-backend-269012942764"
+    key    = "spotify-data-platform.tfstate"
+    region = "us-east-1"
+
   }
 }
 
