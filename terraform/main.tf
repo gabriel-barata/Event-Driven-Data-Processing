@@ -11,7 +11,7 @@ terraform {
   }
 }
 
-#Connfiguring the terraform backend
+#Configuring the terraform backend
 terraform {
 
   backend "s3" {
