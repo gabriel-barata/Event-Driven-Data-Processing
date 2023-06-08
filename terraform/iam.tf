@@ -1,3 +1,38 @@
+#s3 policy for CloudTrail monitoring
+resource "aws_s3_bucket_policy" "s3-bucket-policy-cloud-trail" {
+
+  bucket = aws_s3_bucket.aws-s3-buckets[0].id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudTrailAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudtrail.amazonaws.com"
+      },
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[0].arn}"
+    },
+    {
+      "Sid": "AllowCloudTrailWrite",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudtrail.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[0].arn}/*"
+    }
+  ]
+}
+EOF
+}
+
 #This policy defines the EventBridge permissions on s3
 resource "aws_iam_policy" "s3-event-policy" {
 
@@ -89,9 +124,9 @@ EOF
 #SNS topic will be published on the SQS queue
 resource "aws_sqs_queue_policy" "sqs-receive-message-policy" {
 
-    queue_url = aws_sqs_queue.sqs-lambda-queue.url
+  queue_url = aws_sqs_queue.sqs-lambda-queue.url
 
-    policy = <<EOF
+  policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [

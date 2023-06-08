@@ -13,6 +13,18 @@ resource "aws_s3_bucket" "aws-s3-buckets" {
 
 }
 
+#Creating a CloudTrail, this will be used for monitoring our s3 bucket events
+resource "aws_cloudtrail" "s3-events-cloudtrail" {
+
+  name                          = "${var.project-name}-cloudtrail-s3"
+  s3_bucket_name                = aws_s3_bucket.aws-s3-buckets[0].id
+  is_multi_region_trail         = false
+  include_global_service_events = true
+  enable_logging                = true
+
+}
+
+
 #Creating the EventBridge rule that is triggered everytime a new file is droped on the bronze bucket
 resource "aws_cloudwatch_event_rule" "s3-event-rule" {
 
@@ -55,24 +67,24 @@ resource "aws_cloudwatch_event_target" "sns-event-target" {
 #Creating the SQS queue
 resource "aws_sqs_queue" "sqs-lambda-queue" {
 
-    name = "${var.project-name}-sqs-lambda-queue"
-    message_retention_seconds = 43200
-    delay_seconds = 0 # the time in seconds that the delivery of all messages in the queue will be delayed
-    fifo_queue = false # for this project we're using a standard queue
+  name                      = "${var.project-name}-sqs-lambda-queue"
+  message_retention_seconds = 43200
+  delay_seconds             = 0     # the time in seconds that the delivery of all messages in the queue will be delayed
+  fifo_queue                = false # for this project we're using a standard queue
 
-    tags = {
-      
-      Environment = "Dev"
+  tags = {
 
-    }
+    Environment = "Dev"
+
+  }
 
 }
 
 #Providing a resource for subscribing SQS queue to the SNS topic
 resource "aws_sns_topic_subscription" "sqs-subscription-sns" {
 
-    topic_arn = aws_sns_topic.sns-s3-topic.arn
-    protocol = "sqs"
-    endpoint = aws_sqs_queue.sqs-lambda-queue.arn
-  
+  topic_arn = aws_sns_topic.sns-s3-topic.arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.sqs-lambda-queue.arn
+
 }
