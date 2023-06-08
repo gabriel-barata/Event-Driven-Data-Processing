@@ -1,4 +1,4 @@
-#This policy defines the EventBridge rule permissions on s3
+#This policy defines the EventBridge permissions on s3
 resource "aws_iam_policy" "s3-event-policy" {
 
   name   = "s3-event-policy"
