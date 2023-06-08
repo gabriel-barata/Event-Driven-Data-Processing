@@ -3,5 +3,5 @@ An entirely serverless event driven data pipeline built on AWS cloud for high sc
 
 ## Solution Architecture
 <p align="left">
-  <img src="https://postimg.cc/zVCHCq51" alt="Texto Alternativo" width="720">
+  <img src="https://i.postimg.cc/bNM0jvBd/diagram.png" alt="Texto Alternativo" width="720">
 </p>
