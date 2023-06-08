@@ -69,7 +69,7 @@ resource "aws_sns_topic_policy" "sns-publish-event-policy" {
   policy = <<EOF
 {
   "Version": "2012-10-17",
-  "Id": "sns-topic-publish-event-policy",
+  "Id": "Allow-SNS-Publish-Event",
   "Statement": [
     {
       "Sid": "AllowPublish",
@@ -83,4 +83,34 @@ resource "aws_sns_topic_policy" "sns-publish-event-policy" {
   ]
 }
 EOF
+}
+
+#Creating a SQS policy that guarantees only messages sent from our 
+#SNS topic will be published on the SQS queue
+resource "aws_sqs_queue_policy" "sqs-receive-message-policy" {
+
+    queue_url = aws_sqs_queue.sqs-lambda-queue.url
+
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow-SNS-SendMessage",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": "${aws_sqs_queue.sqs-lambda-queue.arn}",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "${aws_sns_topic.sns-s3-topic.arn}"
+        }
+      }
+    }
+  ]
+}
+EOF
+
 }

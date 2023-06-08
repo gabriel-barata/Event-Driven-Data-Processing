@@ -6,9 +6,6 @@ An entirely serverless event driven data pipeline built on AWS cloud for high sc
   <img src="https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/68747470733a2f2f692e706f7374696d672e63632f624e4d306a7642642f6469616772616d2e706e67.png" alt="Texto Alternativo" width="720">
 </p>
 
-
-
-
 ## Temp
 
 Amazon S3 (Simple Storage Service):
@@ -44,3 +41,4 @@ Esse é um resumo da arquitetura e do fluxo de dados da pipeline que construímo
 
 + The policies used on this solution was created wiht [aws policy generator](https://awspolicygen.s3.amazonaws.com/policygen.html)'s help.
 + The [policy](https://docs.aws.amazon.com/pt_br/aws-managed-policy/latest/reference/AmazonSNSFullAccess.html) used for SNS full acess.
++ The oficial Terraform [docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) for AWS provider.

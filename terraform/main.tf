@@ -13,7 +13,7 @@ terraform {
 
 #Configuring the terraform backend
 terraform {
-
+  
   backend "s3" {
 
     bucket = "terraform-backend-269012942764"
