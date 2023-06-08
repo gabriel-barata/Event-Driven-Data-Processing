@@ -36,14 +36,14 @@ EOF
     role_arn = aws_iam_role.event-bridge-role.arn
 }
 
-#Creating the SNS topic that will be triggered by the EventBridge rule
+#Creating the SNS topic
 resource "aws_sns_topic" "sns-s3-topic" {
 
     name = "sns-s3-topic"
   
 }
 
-#Creating the event that triggers the SNS topic, based on the rule that was defined above
+#Creating the event target that will be our SNS topic
 resource "aws_cloudwatch_event_target" "sns-event-target" {
 
     rule = aws_cloudwatch_event_rule.s3-event-rule.name
