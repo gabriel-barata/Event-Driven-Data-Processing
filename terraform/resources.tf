@@ -82,3 +82,33 @@ resource "aws_sns_topic_subscription" "sqs-subscription-sns" {
   endpoint  = aws_sqs_queue.sqs-lambda-queue.arn
 
 }
+
+#Compresing the python function
+data "archive_file" "lambda-function-zip" {
+
+    source_dir = "${path.module}/lambda/"
+    output_path = "${path.module}/lambda/lambda.zip"
+    type = "zip"
+  
+}
+
+#Defining our lambda function
+resource "aws_lambda_function" "lambda-processing-to-parquet" {
+  
+    filename = "lambda.zip"
+    source_code_hash = data.archive_file.lambda-function-zip.output_base64sha256
+    function_name = "${var.project-name}-lambda"
+    role = aws_iam_role.lambda-function-role.arn
+    handler = "main.handler"
+    runtime = "3.10"
+
+}
+
+resource "aws_lambda_event_source_mapping" "event-source-mapping" {
+
+    event_source_arn = aws_sqs_queue.sqs-lambda-queue.arn
+    enabled = true
+    function_name = ""
+    batch_size = 1 # every message will trigger one lambda
+  
+}
