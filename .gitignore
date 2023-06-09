@@ -4,7 +4,3 @@
 /terraform/.terraform
 /terraform/.terraform.lock.hcl
 /terraform/terraform.tfstate.backup
-/images
-.gitpod.yml
-/aws
-awscliv2.zip
