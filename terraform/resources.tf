@@ -13,17 +13,13 @@ resource "aws_s3_bucket" "aws-s3-buckets" {
 
 }
 
-#Creating a CloudTrail, this will be used for monitoring our s3 bucket events
-resource "aws_cloudtrail" "s3-events-cloudtrail" {
+#Enabling the s3 notification to eventBridge
+resource "aws_s3_bucket_notification" "s3-event-enable-notifcation" {
 
-  name                          = "${var.project-name}-cloudtrail-s3"
-  s3_bucket_name                = aws_s3_bucket.aws-s3-buckets[0].id
-  is_multi_region_trail         = false
-  include_global_service_events = true
-  enable_logging                = true
+  bucket      = aws_s3_bucket.aws-s3-buckets[0].id
+  eventbridge = true
 
 }
-
 
 #Creating the EventBridge rule that is triggered everytime a new file is droped on the bronze bucket
 resource "aws_cloudwatch_event_rule" "s3-event-rule" {
@@ -34,12 +30,10 @@ resource "aws_cloudwatch_event_rule" "s3-event-rule" {
   event_pattern = <<EOF
 {
   "source": ["aws.s3"],
-  "detail-type": ["AWS API Call via CloudTrail"],
+  "detail-type": ["Object Created"],
   "detail": {
-    "eventSource": ["s3.amazonaws.com"],
-    "eventName": ["PutObject"],
-    "requestParameters": {
-      "bucketName": ["${aws_s3_bucket.aws-s3-buckets[0].id}"]
+    "bucket": {
+      "name": ["${aws_s3_bucket.aws-s3-buckets[0].id}"]
     }
   }
 }
