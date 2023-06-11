@@ -37,6 +37,10 @@ A função Lambda é acionada quando uma nova mensagem é recebida na fila SQS.
 A função Lambda processa o arquivo, executando transformações ou outras operações definidas.
 Esse é um resumo da arquitetura e do fluxo de dados da pipeline que construímos. Ela permite automatizar o processamento de arquivos adicionados ao bucket "dl-bronze-layer", acionando uma função Lambda para realizar transformações ou outras ações necessárias.
 
+## Use
+
++ pip install -r ./packages pandas pyarrow
+
 ## Resources
 
 + The policies used on this solution was created wiht [aws policy generator](https://awspolicygen.s3.amazonaws.com/policygen.html)'s help.

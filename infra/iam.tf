@@ -1,4 +1,5 @@
-#This policy defines the EventBridge permissions on s3
+# EventBridge policies & roles
+## This policy defines the EventBridge permissions on s3
 resource "aws_iam_policy" "s3-event-policy" {
 
   name   = "s3-event-policy"
@@ -25,7 +26,7 @@ EOF
 
 }
 
-#Configuring the role that our EventBridge will assume
+## Configuring the role that our EventBridge will assume
 resource "aws_iam_role" "event-bridge-role" {
 
   name = "event-bridge-role"
@@ -35,7 +36,7 @@ resource "aws_iam_role" "event-bridge-role" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "EventBridge-Role",
+      "Sid": "EventBridgeRole",
       "Effect": "Allow",
       "Principal": {
         "Service": "events.amazonaws.com"
@@ -47,7 +48,7 @@ resource "aws_iam_role" "event-bridge-role" {
 EOF
 }
 
-#Attaching policies to the EventBridge role
+## Attaching policies to the EventBridge role
 resource "aws_iam_role_policy_attachment" "s3-event-policy-role-attachment" {
 
   policy_arn = aws_iam_policy.s3-event-policy.arn
@@ -62,7 +63,8 @@ resource "aws_iam_role_policy_attachment" "sns-event-policy-role-attachment" {
 
 }
 
-#Creating a policy that allows SNS to publish the events it receives from EventBridge
+# SNS & SQS policies & roles
+## Creating a policy that allows SNS to publish the events it receives from EventBridge
 resource "aws_sns_topic_policy" "sns-publish-event-policy" {
 
   arn = aws_sns_topic.sns-s3-topic.arn
@@ -86,8 +88,8 @@ resource "aws_sns_topic_policy" "sns-publish-event-policy" {
 EOF
 }
 
-#Creating a SQS policy that guarantees only messages sent from our 
-#SNS topic will be published on the SQS queue
+## Creating a SQS policy that guarantees only messages sent from our 
+## SNS topic will be published on the SQS queue
 resource "aws_sqs_queue_policy" "sqs-receive-message-policy" {
 
   queue_url = aws_sqs_queue.sqs-lambda-queue.url
@@ -116,29 +118,39 @@ EOF
 
 }
 
-#Defining the lambda permissions
+# Lambda policies & roles
+## Defining the lambda permissions
 resource "aws_iam_policy" "lambda-policy" {
 
-    name = "lambda-function-policy"
-    
-    policy = <<EOF
+  name = "lambda-function-policy"
+
+  policy = <<EOF
 {
 	"Version": "2012-10-17",
 	"Statement": [
 		{
+			"Sid": "AllowGetObject",
 			"Effect": "Allow",
-			"Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[0].id}/*"
-		},
-    {
-			"Effect": "Allow",
-			"Action": "s3:PutObject",
-      "Resource": [
-        "arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[1].id}",
-			  "arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[1].id}/*"
+			"Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+        ],
+			"Resource": [
+        "arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[0].id}",
+        "arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[0].id}/*"
         ]
 		},
-    {
+		{
+			"Sid": "AllowPutObject",
+			"Effect": "Allow",
+			"Action": "s3:PutObject",
+			"Resource": [
+				"arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[1].id}",
+				"arn:aws:s3:::${aws_s3_bucket.aws-s3-buckets[1].id}/*"
+			]
+		},
+		{
+			"Sid": "AllowSQSActions",
 			"Effect": "Allow",
 			"Action": [
 				"sqs:DeleteMessage",
@@ -147,23 +159,25 @@ resource "aws_iam_policy" "lambda-policy" {
 			],
 			"Resource": "${aws_sqs_queue.sqs-lambda-queue.arn}"
 		},
-    {
-      "Effect" : "Allow",
-      "Action" : [
-        "logs":CreateLogGroup",
-        "logs":CreateLogStream",
-        "logs":PutLogEvents"
-      ],
-      "Resource" : "*"
-    }
+		{
+			"Sid": "AllowCloudWatchLogsActions",
+			"Effect": "Allow",
+			"Action": [
+				"logs:CreateLogGroup",
+				"logs:CreateLogStream",
+				"logs:PutLogEvents"
+			],
+			"Resource": "*"
+		}
 	]
 }
 EOF
 
 }
 
+## The role Lambda will assume
 resource "aws_iam_role" "lambda-function-role" {
-  
+
   name = "lambda-function-role"
 
   assume_role_policy = <<EOF
@@ -171,7 +185,7 @@ resource "aws_iam_role" "lambda-function-role" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "Lambda-Role",
+      "Sid": "LambdaRole",
       "Effect": "Allow",
       "Principal": {
         "Service": "lambda.amazonaws.com"
@@ -183,10 +197,10 @@ resource "aws_iam_role" "lambda-function-role" {
 EOF
 }
 
-##Attaching lambda policy to the role
+## Attaching lambda policy to the role
 resource "aws_iam_role_policy_attachment" "lambda-policy-attachment" {
 
-    policy_arn = aws_iam_policy.lambda-policy.arn
-    role = aws_iam_role.lambda-function-role.name
-  
+  policy_arn = aws_iam_policy.lambda-policy.arn
+  role       = aws_iam_role.lambda-function-role.name
+
 }

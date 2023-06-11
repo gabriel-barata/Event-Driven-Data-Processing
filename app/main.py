@@ -7,7 +7,7 @@ import re
 
 class SpotifyAPI:
 
-    def __init__(self, client_id, client_secret, aws_access_key_id, aws_secret_access_key):
+    def __init__(self, client_id, client_secret):
         
         self.client_id = client_id
         self.client_secret = client_secret

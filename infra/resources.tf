@@ -83,24 +83,34 @@ resource "aws_sns_topic_subscription" "sqs-subscription-sns" {
 
 }
 
-#Compresing the python function
-data "archive_file" "lambda-function-zip" {
+##Uploading my source.zip to a s3 bucket
+resource "aws_s3_object" "upload-lambda-env" {
 
-    source_dir = "${path.module}/lambda/"
-    output_path = "${path.module}/lambda/lambda.zip"
-    type = "zip"
-  
+  bucket = aws_s3_bucket.aws-s3-buckets[0].id
+  key    = "/lambda/source.zip"
+  source = "${path.module}/lambda/source.zip"
+
 }
 
 #Defining our lambda function
 resource "aws_lambda_function" "lambda-processing-to-parquet" {
-  
-    filename = "lambda.zip"
-    source_code_hash = data.archive_file.lambda-function-zip.output_base64sha256
+
+    filename = "s3://${aws_s3_bucket.aws-s3-buckets[0].id}/lambda/source.zip"
+    source_code_hash = filebase64sha256("${path.module}/lambda/source.zip")
     function_name = "${var.project-name}-lambda"
     role = aws_iam_role.lambda-function-role.arn
-    handler = "main.handler"
-    runtime = "3.10"
+    handler = "lambda.handler"
+    runtime = "python3.10"
+    depends_on = [ aws_s3_object.upload-lambda-env ]
+
+    environment {
+      variables = {
+        
+        LANDING_BUCKET = aws_s3_bucket.aws-s3-buckets[0].id,
+        STAGING_BUCKET = aws_s3_bucket.aws-s3-buckets[1].id
+
+      }
+    }
 
 }
 
@@ -108,7 +118,8 @@ resource "aws_lambda_event_source_mapping" "event-source-mapping" {
 
     event_source_arn = aws_sqs_queue.sqs-lambda-queue.arn
     enabled = true
-    function_name = ""
-    batch_size = 1 # every message will trigger one lambda
-  
+    function_name = aws_lambda_function.lambda-processing-to-parquet.id
+    batch_size = 300 # every 300 messages will trigger one lambda
+    maximum_batching_window_in_seconds = 180
+
 }
