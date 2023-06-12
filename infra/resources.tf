@@ -95,13 +95,14 @@ resource "aws_s3_object" "upload-lambda-env" {
 #Defining our lambda function
 resource "aws_lambda_function" "lambda-processing-to-parquet" {
 
-    filename = "s3://${aws_s3_bucket.aws-s3-buckets[0].id}/lambda/source.zip"
-    source_code_hash = filebase64sha256("${path.module}/lambda/source.zip")
     function_name = "${var.project-name}-lambda"
     role = aws_iam_role.lambda-function-role.arn
     handler = "lambda.handler"
     runtime = "python3.10"
     depends_on = [ aws_s3_object.upload-lambda-env ]
+
+    s3_bucket = aws_s3_bucket.aws-s3-buckets[0].id
+    s3_key = "lambda/source.zip"
 
     environment {
       variables = {
