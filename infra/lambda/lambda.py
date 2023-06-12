@@ -11,11 +11,14 @@ stg_bucket = os.environ.get("STAGING_BUCKET")
 s3 = boto3.client('s3')
 
 def handler(event, context):
+
+    event = json.loads(event)
+
     file_names = []
-    msg_id = event["Records"]["messageId"]
+    msg_id = event["Records"][0]["messageId"]
 
     for record in event["Records"]:
-        message = json.loads(record["body"])
+        message = record["body"]["Message"]["detail"]
         file_name = message["object"]["key"]
 
         s3.download_file(ldn_bucket, file_name, f'/tmp/{file_name}')

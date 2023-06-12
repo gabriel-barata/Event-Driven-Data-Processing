@@ -6,9 +6,4 @@
 /infra/terraform.tfstate.backup
 /infra/lambda/packages/*
 /infra/lambda/source.zip
-
-###############
-.gitpod.yml
-awscliv2.zip
-/aws
-setup.sh
+/sacanagem_2
