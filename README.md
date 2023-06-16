@@ -5,6 +5,7 @@ An entirely serverless event driven data pipeline built on AWS cloud for high sc
 <p align="left">
   <img src="https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/diagram.drawio.png" alt="Texto Alternativo" width="720">
 </p>
+
 ### Components
 + **Amazon S3 (Simple Storage Service)**: Amazon S3 its a object storage service high scalable and durable. Our architecture uses s3 as a data repository.
 + **Amazon EventBridge**: EventBridge is a serverless service that uses events to connect application components together. Our architecture uses EventBridge to capture an specific event and send it to a target.
