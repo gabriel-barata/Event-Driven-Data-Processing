@@ -5,41 +5,19 @@ An entirely serverless event driven data pipeline built on AWS cloud for high sc
 <p align="left">
   <img src="https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/diagram.drawio.png" alt="Texto Alternativo" width="720">
 </p>
+### Components
++ **Amazon S3 (Simple Storage Service)**: Amazon S3 its a object storage service high scalable and durable. Our architecture uses s3 as a data repository.
++ **Amazon EventBridge**: EventBridge is a serverless service that uses events to connect application components together. Our architecture uses EventBridge to capture an specific event and send it to a target.
++ **Amazon SNS (Simple Notification Service)**: Amazon SNS is a managed service that provides message delivery from publishers to subscribers. In our architecture Amazon SNS is configured to receive events from EventBridge and them foward it to its subscribers. It is an important point in our project, as it brings great flexibility to the pipeline. Add further workloads to this initial project becomes a way easier, since any new pipeline can be docked to the SNS topic.
++ **Amazon SQS (Simple Queue Service)**: Amazon SQS is a serverless queue service. In our architecture it's configured as a SNS subscriber, everytime a new message is received SQS puts it on a queue. Amazon SQS brings scalability to our project and guarantees that every message received will be processed by the Lambda Function.
++ **Amazon Lambda**: AWS Lambda is a serverless compute service. In our architecture a lambda function was configured to consume the SQS queue and process it's messages.
 
-## Temp
-
-Amazon S3 (Simple Storage Service):
-O Amazon S3 é um serviço de armazenamento de objetos altamente escalável e durável. Nossa arquitetura usa o S3 como um repositório de dados, onde os arquivos são adicionados ao bucket "dl-bronze-layer".
-
-Amazon EventBridge:
-O Amazon EventBridge é um serviço de roteamento de eventos que permite capturar, processar e enviar eventos de diferentes serviços. Configuramos uma regra no EventBridge para acionar sempre que um novo arquivo for adicionado ao bucket "dl-bronze-layer".
-
-EventBridge Rule:
-A regra do EventBridge é configurada com base em um padrão de correspondência, que define quando a regra será acionada. Nesse caso, a regra é acionada quando um novo arquivo é adicionado ao bucket "dl-bronze-layer".
-
-Amazon SNS (Simple Notification Service):
-O Amazon SNS é um serviço de mensagens e notificações. Configuramos um tópico SNS para receber mensagens do EventBridge quando a regra é acionada. O SNS é responsável por encaminhar a mensagem para os assinantes registrados no tópico.
-
-Amazon SQS (Simple Queue Service):
-O Amazon SQS é um serviço de filas de mensagens. Configuramos uma fila SQS para receber as mensagens do tópico SNS. Quando uma nova mensagem é recebida, ela é colocada na fila SQS para processamento posterior.
-
-AWS Lambda:
-O AWS Lambda é um serviço de computação sem servidor. Configuramos uma função Lambda para consumir a fila SQS e processar as mensagens recebidas. A função Lambda pode executar transformações nos arquivos recém-chegados ao bucket "dl-bronze-layer".
-
-Resumo do fluxo de dados:
-
-Um novo arquivo é adicionado ao bucket "dl-bronze-layer" no Amazon S3.
-O Amazon EventBridge detecta a adição do arquivo e aciona a regra configurada.
-O EventBridge gera um evento contendo informações sobre o arquivo adicionado.
-O evento é enviado para o tópico SNS configurado.
-O tópico SNS encaminha a mensagem contendo o evento para a fila SQS configurada.
-A função Lambda é acionada quando uma nova mensagem é recebida na fila SQS.
-A função Lambda processa o arquivo, executando transformações ou outras operações definidas.
-Esse é um resumo da arquitetura e do fluxo de dados da pipeline que construímos. Ela permite automatizar o processamento de arquivos adicionados ao bucket "dl-bronze-layer", acionando uma função Lambda para realizar transformações ou outras ações necessárias.
-
-## Use
-
-+ pip install -r ./packages pandas pyarrow
+### Pipeline Explanation
+1. A new file is droped on the "dl-bronzw-layer" s3 bucket.
+2. The rule defined on EventBridge is triggered, creates an event and send it to the SNS topic.
+3. The SNS topic foward the received message to the SQS queue.
+4. The lambda function is triggered everytime a new message comes to SQS.
+5. The Lambda reads the file on the s3 bucket, convert it to parquet and saves it on the "dl-staging-layer" s3 bucket.
 
 ## Resources
 
