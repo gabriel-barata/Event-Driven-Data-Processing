@@ -3,7 +3,7 @@ An entirely serverless event driven data pipeline built on AWS cloud for high sc
 
 ## Solution Architecture
 <p align="left">
-  <img src="https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/diagram.drawio.png" alt="Texto Alternativo" width="720">
+  <img src="[https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/diagram.drawio.png](https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/diagram.drawio.png)" alt="Texto Alternativo" width="720">
 </p>
 
 ### Components
