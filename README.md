@@ -1,24 +1,24 @@
 # Event Driven Data Processing
-An entirely serverless event driven data pipeline built on AWS cloud for high scalability and flexibility
+An entirely serverless event driven data pipeline built on AWS cloud for high scalability and flexibility. The core objective of this project was to build a simple and short but effective pipeline for automated data processing.
 
-## Solution Architecture
+## Solution's Architecture
 <p align="left">
-  <img src="https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/diagram.drawio.png" alt="Texto Alternativo">
+  <img src="https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/diagram.png" alt="Texto Alternativo">
 </p>
 
 ### Components
-+ **Amazon S3 (Simple Storage Service)**: Amazon S3 its a object storage service high scalable and durable. Our architecture uses s3 as a data repository.
++ **Amazon S3 (Simple Storage Service)**: Amazon S3 its a object storage service high scalable and durable. Our architecture uses s3 as a data repository, being sort of a Data Lake prototype. In further projects i'll bring a better structred Data Lake.
 + **Amazon EventBridge**: EventBridge is a serverless service that uses events to connect application components together. Our architecture uses EventBridge to capture an specific event and send it to a target.
-+ **Amazon SNS (Simple Notification Service)**: Amazon SNS is a managed service that provides message delivery from publishers to subscribers. In our architecture Amazon SNS is configured to receive events from EventBridge and them foward it to its subscribers. It is an important point in our project, as it brings great flexibility to the pipeline. Add further workloads to this initial project becomes a way easier, since any new pipeline can be docked to the SNS topic.
-+ **Amazon SQS (Simple Queue Service)**: Amazon SQS is a serverless queue service. In our architecture it's configured as a SNS subscriber, everytime a new message is received SQS puts it on a queue. Amazon SQS brings scalability to our project and guarantees that every message received will be processed by the Lambda Function.
-+ **Amazon Lambda**: AWS Lambda is a serverless compute service. In our architecture a lambda function was configured to consume the SQS queue and process it's messages.
++ **Amazon SNS (Simple Notification Service)**: Amazon SNS is a managed motification service that provides message delivery from publishers to subscribers. In our architecture Amazon SNS is configured to receive events from EventBridge and them foward it to its subscribers. It is an important point in our project, as it brings great flexibility to the pipeline. Add further workloads to this initial project becomes a way easier, since any new pipeline can be docked to the SNS topic.
++ **Amazon SQS (Simple Queue Service)**: Amazon SQS is a serverless queue service. In our architecture it's configured as a SNS subscriber, everytime a new message is received SQS puts it on a queue. Amazon SQS brings scalability to our project and guarantees that every message received will be processed by the Lambda Function, it helps us surpass some of the Lambda's limitations about concurrent executions.
++ **Amazon Lambda**: AWS Lambda is a serverless compute service. In our architecture a lambda function was configured to consume the SQS queue and process it's messages, reading the file from the s3 bucket, validating it and then converting it and writing on the next layer.
 
 ### Pipeline Explanation
 1. A new file is droped on the "dl-bronzw-layer" s3 bucket.
-2. The rule defined on EventBridge is triggered, creates an event and send it to the SNS topic.
-3. The SNS topic foward the received message to the SQS queue.
-4. The lambda function is triggered everytime a new message comes to SQS.
-5. The Lambda reads the file on the s3 bucket, convert it to parquet and saves it on the "dl-staging-layer" s3 bucket.
+2. The rule defined on EventBridge is triggered, creates an event and send it's metadata, like the file name, to the SNS topic.
+3. The SNS topic foward the received message to it's subscribers, like the SQS queue.
+4. The lambda function consume the SQS queue, and triggers everytime a new message comes into.
+5. The Lambda reads the file on the s3 bucket, valid it and convert to parquet and saves it on the "dl-staging-layer" s3 bucket.
 
 ## Resources
 
