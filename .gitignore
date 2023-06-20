@@ -1,5 +1,5 @@
 /app/__pycache__
-/venv
+app/venv
 /app/data/*
 /infra/.terraform
 /infra/.terraform.lock.hcl

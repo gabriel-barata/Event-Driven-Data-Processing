@@ -95,32 +95,32 @@ resource "aws_s3_object" "upload-lambda-env" {
 #Defining our lambda function
 resource "aws_lambda_function" "lambda-processing-to-parquet" {
 
-    function_name = "${var.project-name}-lambda"
-    role = aws_iam_role.lambda-function-role.arn
-    handler = "lambda.handler"
-    runtime = "python3.10"
-    depends_on = [ aws_s3_object.upload-lambda-env ]
+  function_name = "${var.project-name}-lambda"
+  role          = aws_iam_role.lambda-function-role.arn
+  handler       = "lambda.handler"
+  runtime       = "python3.10"
+  depends_on    = [aws_s3_object.upload-lambda-env]
 
-    s3_bucket = aws_s3_bucket.aws-s3-buckets[0].id
-    s3_key = "lambda/source.zip"
+  s3_bucket = aws_s3_bucket.aws-s3-buckets[0].id
+  s3_key    = "lambda/source.zip"
 
-    environment {
-      variables = {
-        
-        LANDING_BUCKET = aws_s3_bucket.aws-s3-buckets[0].id,
-        STAGING_BUCKET = aws_s3_bucket.aws-s3-buckets[1].id
+  environment {
+    variables = {
 
-      }
+      LANDING_BUCKET = aws_s3_bucket.aws-s3-buckets[0].id,
+      STAGING_BUCKET = aws_s3_bucket.aws-s3-buckets[1].id
+
     }
+  }
 
 }
 
 resource "aws_lambda_event_source_mapping" "event-source-mapping" {
 
-    event_source_arn = aws_sqs_queue.sqs-lambda-queue.arn
-    enabled = true
-    function_name = aws_lambda_function.lambda-processing-to-parquet.id
-    batch_size = 300 # every 300 messages will trigger one lambda
-    maximum_batching_window_in_seconds = 180
+  event_source_arn                   = aws_sqs_queue.sqs-lambda-queue.arn
+  enabled                            = true
+  function_name                      = aws_lambda_function.lambda-processing-to-parquet.id
+  batch_size                         = 300 # every 300 messages will trigger one lambda
+  maximum_batching_window_in_seconds = 180
 
 }

@@ -51,7 +51,7 @@ class SpotifyAPI:
         return artist_id
 
     ##This function gets the data from albums maden by the given 
-    def get_albums(self, artist_id, prefix, include_groups : list() = ['album', 'single'], limit : int = 30):
+    def get_albums(self, artist_id, prefix, bucket_name, include_groups : list() = ['album', 'single'], limit : int = 30):
 
         s3 = boto3.resource('s3')
 
@@ -72,13 +72,13 @@ class SpotifyAPI:
         with open('data/albums/' + prefix + '-albums' + '.json', 'w') as file:
             json.dump(json_data, file, indent = 4)
 
-        s3.Bucket("spotify-data-platform-bronze-269012942764")\
+        s3.Bucket(bucket_name)\
             .upload_file('data/albums/' + prefix + '-albums' + '.json', prefix + '-albums.json')
 
         return albums_ids
     
     ##This function gets all the tracks in a album
-    def get_album_tacks(self, album_id, album_name, prefix, limit : int = 30, market : str = "BR"):
+    def get_album_tacks(self, album_id, bucket_name, album_name, prefix, limit : int = 30, market : str = "BR"):
 
         s3 = boto3.resource('s3')
 
@@ -106,7 +106,7 @@ class SpotifyAPI:
             with open('data/tracks/' + prefix + '/' + album_name + '/' + track_name + '.json', 'w') as file:
                 json.dump(track, file, indent = 4)
             
-            s3.Bucket("spotify-data-platform-bronze-269012942764")\
+            s3.Bucket(bucket_name)\
                 .upload_file('data/tracks/' + prefix + '/' + album_name + '/' + track_name + '.json', album_name + '/' + track_name + '.json')
 
         return 0
