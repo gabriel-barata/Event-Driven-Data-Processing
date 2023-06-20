@@ -1,5 +1,6 @@
 # Event Driven Data Processing
-An entirely serverless event driven data pipeline built on AWS cloud for high scalability and flexibility. The core objective of this project was to build a simple and short but effective pipeline for automated data processing.
+An entirely serverless event driven data pipeline built on AWS cloud for high scalability and flexibility. The core objective of this project was to build a simple and short but effective and robust pipeline for automated data processing.
+
 To feed this project a small Python app was created, to make requests on the Spotify API and ingest the obtained data on a AWS S3 bucket. The entire event driven pipeline was built on AWS cloud with serverless services.
 
 ## Solution's Architecture
@@ -16,9 +17,9 @@ To feed this project a small Python app was created, to make requests on the Spo
 + **Amazon Lambda**: AWS Lambda is a serverless compute service. In our architecture a lambda function was configured to consume the SQS queue and process it's messages, reading the file from the s3 bucket, validating it and then converting it and writing on the next layer.
 
 ### The Benefits of This Architecture
-+ **Serverless**: In a cloud context, "serverless" refers to a cloud computing model where the cloud provider manages the infrastructure and resources required to run and scale applications. No need to manage or provision servers explicitily.
-+ **Flexibility**: It's an exetremely flexible solution. If another developer or team wants to, for whatever reason, do some job on this same bucket and new come files, it would just have to subscribe his worload to the SNS topic.
-+ **Scalable**:
++ **Serverless**: In a cloud context, "serverless" refers to a cloud computing model where the cloud provider manages the infrastructure and resources required to run and scale applications. No need to manage or provision servers explicitily, just deploy code.
++ **Flexibility**: It's an exetremely flexible solution. If another developer or team wants to, for whatever reason, do some job on this same bucket and new come files, it would just have to subscribe his workload to the SNS topic.
++ **Scalability**: Lambda automatically scales up based on incoming events, so we should no ahve have problems if multiple files are droped on the s3 bucket at once. And with the SQS queue we can surpass the Lambda limitations on concurrent executions. That is, one file or a thousand of files, it doesnt matter, all should be processed without big problems.
 
 ### Pipeline Explanation
 1. A new file is droped on the "dl-bronze-layer" s3 bucket.
@@ -28,12 +29,16 @@ To feed this project a small Python app was created, to make requests on the Spo
 5. The Lambda reads the file on the s3 bucket, valid it and convert to parquet and saves it on the "dl-staging-layer" s3 bucket.
 
 ## Local Deployment
-daniella
+Couple instructions for local deployment
 ### Requirements
-To be able to deploy this on your local machine, you'll need:
-+ an AWS account with admin privileges
-+ AWS CLI installed and configured
-+ Terraform installed
++ [git](https://git-scm.com/downloads) installed
++ an [AWS](https://aws.amazon.com/) account with admin privileges
++ [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed and configured
++ [Terraform](https://developer.hashicorp.com/terraform/downloads) installed
+
+Run the following commands to setup the project
+1. clone the git repository to your machine:
+  `git clone -b master https://github.com/gabriel-barata/Event-Driven-Data-Processing`
 
 ## Resources
 

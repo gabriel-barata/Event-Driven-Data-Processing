@@ -6,4 +6,6 @@ app/venv
 /infra/terraform.tfstate.backup
 /infra/lambda/packages/*
 /infra/lambda/source.zip
-/sacanagem_2
+
+===================================
+/aws
