@@ -31,20 +31,40 @@ To feed this project a small Python app was created, to make requests on the Spo
 ## Local Deployment
 Couple instructions for local deployment
 ### Requirements
++ [Python](https://www.python.org/downloads/) 3.7 or more
 + [git](https://git-scm.com/downloads) installed
 + an [AWS](https://aws.amazon.com/) account with admin privileges
 + [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed and configured
 + [Terraform](https://developer.hashicorp.com/terraform/downloads) installed
 
-Run the following commands to setup the project
-1. clone the git repository to your machine:
-  `git clone -b master https://github.com/gabriel-barata/Event-Driven-Data-Processing`
+Open the terminal and run the following commands to setup the project
+```
+# clone this repo to your machine
+git clone -b master https://github.com/gabriel-barata/Event-Driven-Data-Processing
+
+# navigate to the repo's folder
+cd Event-Driven-Data-Processing
+
+# give the necessary permissions to our setup file
+chmod +x setup.sh
+
+# setup the environment
+./setup.sh deploy
+
+# at this point you can check at your AWS account to see services up
+# run the python app to feed the S3 bucket
+./setup.sh run
+```
+After usage you can destroy resources running
+
+`./setup.sh destroy`
 
 ## Resources
 
-+ The policies used on this solution was created wiht [aws policy generator](https://awspolicygen.s3.amazonaws.com/policygen.html)'s help.
++ The policies used on this solution was created with [aws policy generator](https://awspolicygen.s3.amazonaws.com/policygen.html)'s help.
 + The [policy](https://docs.aws.amazon.com/pt_br/aws-managed-policy/latest/reference/AmazonSNSFullAccess.html) used for SNS full acess.
 + The oficial Terraform [docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) for AWS provider.
++ AWS Lambda [developer's guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html).
 
-## Reach me
+## Contact
 <a href="https://www.linkedin.com/in/gabriel-barata/" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="gabriel-barata" height="30" width="40" /></a>
