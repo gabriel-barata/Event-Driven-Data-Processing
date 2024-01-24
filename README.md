@@ -5,7 +5,7 @@ To feed this project a small Python app was created, to make requests on the Spo
 
 ## Solution's Architecture
 <p align="left">
-  <img src="https://raw.githubusercontent.com/gabriel-barata/images/master/event-driven-data-pipeline/diagram.png" alt="Texto Alternativo">
+  <img src="https://github.com/gabriel-barata/images/blob/master/event-driven-data-pipeline/diagram.png" alt="App Diagram">
 </p>
 
 ### Components
