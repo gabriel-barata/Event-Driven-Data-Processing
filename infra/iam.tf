@@ -1,4 +1,6 @@
 # EventBridge policies & roles
+
+
 ## This policy defines the EventBridge permissions on s3
 resource "aws_iam_policy" "s3-event-policy" {
 
