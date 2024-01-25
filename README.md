@@ -32,6 +32,7 @@ To feed this project a small Python app was created, to make requests on the Spo
 Couple instructions for local deployment
 ### Requirements
 + [Python](https://www.python.org/downloads/) 3.7 or more
++ [Poetry](https://python-poetry.org) for python dependencies management
 + [git](https://git-scm.com/downloads) installed
 + an [AWS](https://aws.amazon.com/) account with admin privileges
 + [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed and configured
@@ -44,6 +45,10 @@ git clone -b master https://github.com/gabriel-barata/Event-Driven-Data-Processi
 
 # navigate to the repo's folder
 cd Event-Driven-Data-Processing
+
+# install the python dependencies
+poetry install
+poetry shell
 
 # give the necessary permissions to our setup file
 chmod +x setup.sh

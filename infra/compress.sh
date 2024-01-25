@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 cd lambda
 pip install --target ./packages pyarrow

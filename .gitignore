@@ -1,11 +1,7 @@
-/app/__pycache__
-app/venv
+*__pycache__
 /app/data/*
 /infra/.terraform
 /infra/.terraform.lock.hcl
 /infra/terraform.tfstate.backup
 /infra/lambda/packages/*
 /infra/lambda/source.zip
-
-===================================
-/aws
