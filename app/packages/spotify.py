@@ -129,7 +129,7 @@ class SpotifyAPI:
 
         s3.Bucket(self.bucket_name).upload_file(
             file_name,
-            prefix + '-albums.json'
+            file_name
             )
 
         return albums_ids
@@ -152,9 +152,6 @@ class SpotifyAPI:
         album_name = '-'.join(re.sub(
             r'[^\w\s]', '', album_name).lower().split(' '))
 
-        if not os.path.exists('data/tracks/' + album_name):
-            os.makedirs('data/tracks/' + album_name)
-
         endpoint = f"https://api.spotify.com/v1/albums/{album_id}/tracks"
         params = {
             'limit': limit,
@@ -172,6 +169,12 @@ class SpotifyAPI:
             track_name = '-'.join(re.sub(
                 r'[^\w\s]', '', track["name"]).lower().split(' '))
 
+            current_folder = os.path.join(
+                'data', 'tracks', prefix, album_name)
+
+            if not os.path.exists(current_folder):
+                os.makedirs(current_folder)
+
             file_name = os.path.join(
                 'data', 'tracks', prefix, album_name, f'{track_name}.json'
                 )
@@ -180,7 +183,7 @@ class SpotifyAPI:
                 json.dump(track, file, indent=4)
 
             s3.Bucket(self.bucket_name).upload_file(
-                file_name, os.path.join(album_name, f'{track_name}.json')
+                file_name, file_name
             )
 
         return 0

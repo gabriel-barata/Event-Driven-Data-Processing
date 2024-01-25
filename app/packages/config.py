@@ -29,7 +29,7 @@ def render_config():
 
         "SEARCH_ENDPOINT": v.SEARCH_ENDPOINT,
 
-        "BUCKET_NAME": os.getenv("BUKET_NAME"),
+        "BUCKET_NAME": os.getenv("BUCKET_NAME"),
         "ARTIST_LIST": v.ARTIST_LIST
     }
 

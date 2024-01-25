@@ -10,8 +10,6 @@ deploy(){
     echo "Deploying AWS resources..."
     terraform init
     terraform plan && terraform apply -auto-approve
-    bucket_name=$(terraform output -raw aws_s3_bucket.s3-bucket[0].id)
-    export BUCKET_NAME=$bucket_name
     cd ..
 
 }
@@ -19,6 +17,12 @@ deploy(){
 run() {
 
     echo "Runing python app..."
+    
+    cd infra
+    bucket_name=$(terraform output -raw bucket-name)
+    export BUCKET_NAME=$bucket_name
+    cd ..
+
     cd app
     python3 main.py
 
@@ -29,7 +33,6 @@ destroy() {
     cd infra
     terraform destroy -auto-approve
     cd ..
-    unset BUCKET_NAME
 
 }
 
@@ -45,7 +48,7 @@ case $1 in
         ;;
     *)
         if [ $# -eq 0 ]; then
-            echo "-e: No argument was delceared! Usage: $0 {deploy | run | destroy}"
+            echo "-e: No argument was declared! Usage: $0 {deploy | run | destroy}"
         else
             echo "-e: Invalid Argument! Usage: $0 {deploy | run | destroy}"
         fi
