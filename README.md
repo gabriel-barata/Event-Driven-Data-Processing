@@ -22,7 +22,7 @@ To feed this project a small Python app was created, to make requests on the Spo
 + **Scalability**: Lambda automatically scales up based on incoming events, so we should no ahve have problems if multiple files are droped on the s3 bucket at once. And with the SQS queue we can surpass the Lambda limitations on concurrent executions. That is, one file or a thousand of files, it doesnt matter, all should be processed without big problems.
 
 ### Pipeline Explanation
-1. A new file is droped on the "dl-bronze-layer" s3 bucket.
+1. Our application make requests to the Spotify API and a new file is droped on the "dl-bronze-layer" s3 bucket.
 2. The rule defined on EventBridge is triggered, creates an event and send it's metadata, like the file name, to the SNS topic.
 3. The SNS topic foward the received message to it's subscribers, like the SQS queue.
 4. The lambda function consume the SQS queue, and triggers everytime a new message comes into.
