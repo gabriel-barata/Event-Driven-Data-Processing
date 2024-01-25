@@ -14,7 +14,19 @@ class SpotifyAPI:
         self.client_secret = client_secret
         self.bucket_name = bucket_name
 
+        self.__create_dirs()
+
         self._auth()
+
+    @staticmethod
+    def __create_dirs():
+
+        folders = ['albums', 'tracks']
+        for folder in folders:
+            path = os.path.join('data', folder)
+
+            if not os.path.exists(path):
+                os.makedirs(path)
 
     def _auth(self):
 
@@ -165,7 +177,6 @@ class SpotifyAPI:
                 )
 
             with open(file_name, 'w') as file:
-
                 json.dump(track, file, indent=4)
 
             s3.Bucket(self.bucket_name).upload_file(

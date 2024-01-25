@@ -14,19 +14,20 @@ if __name__ == '__main__':
 
     for artist in config.ARTIST_LIST:
 
-        artist_id = app.retrieve_artist_id(artist)
+        artist_id = app.retrieve_artist_id(
+            artist,
+            config.SEARCH_ENDPOINT
+            )
 
         albums_ids = app.retrieve_artist_albums(
             artist_id=artist_id,
             prefix=artist.split(' ')[0],
-            include_groups=["album"],
-            bucket_name=config.BUCKET_NAME
+            include_groups=["album"]
         )
 
         for id_album in albums_ids:
             app.get_album_tacks(
                 album_id=id_album[0],
                 album_name=id_album[1],
-                prefix=artist.split(' ')[0],
-                bucket_name=config.BUCKET_NAME
+                prefix=artist.split(' ')[0]
                 )

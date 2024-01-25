@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from typing import List, Optional
 import os
 
-import variables as v
+from packages import variables as v
 
 load_dotenv(v.ENV_FILE)
 
@@ -29,7 +29,8 @@ def render_config():
 
         "SEARCH_ENDPOINT": v.SEARCH_ENDPOINT,
 
-        "BUCKET_NAME": os.getenv("BUKET_NAME")
+        "BUCKET_NAME": os.getenv("BUKET_NAME"),
+        "ARTIST_LIST": v.ARTIST_LIST
     }
 
     config = Config(**config_dict)

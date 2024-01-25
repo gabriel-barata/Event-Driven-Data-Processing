@@ -46,7 +46,8 @@ case $1 in
     *)
         if [ $# -eq 0 ]; then
             echo "-e: No argument was delceared! Usage: $0 {deploy | run | destroy}"
-            ;;
         else
             echo "-e: Invalid Argument! Usage: $0 {deploy | run | destroy}"
+        fi
+    ;;
 esac
